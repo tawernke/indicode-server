@@ -6,10 +6,10 @@ import mikroOrmConfig from "./mikro-orm.config";
 const main = async () => {
   const orm = await MikroORM.init(mikroOrmConfig);
   await orm.getMigrator().up()
-  const product = orm.em.create(Product, { title: "First Product" });
-  await orm.em.persistAndFlush(product);
-  console.log("----------sql 2 ----------");
-  await orm.em.nativeInsert(Product, { title: "My firsyt product 2" });
+  // const product = orm.em.create(Product, { title: "First Product" });
+  // await orm.em.persistAndFlush(product);
 };
 
-main();
+main().catch(err => {
+  console.error(err)
+})
