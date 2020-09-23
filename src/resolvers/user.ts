@@ -11,6 +11,7 @@ import {
   Resolver,
 } from "type-graphql";
 import argon2 from "argon2";
+import { EntityManager } from "@mikro-orm/postgresql";
 
 //Inputs are what the resolver takes as an input, object types are what resolvers return
 @InputType()
@@ -41,22 +42,20 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
-  @Query(() => User, {nullable: true})
-  async me(
-    @Ctx() { em, req }: MyContext
-  ) {
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { em, req }: MyContext) {
     if (!req.session.userId) {
-      return null
+      return null;
     }
 
     const user = await em.findOne(User, { id: req.session.userId });
-    return user
+    return user;
   }
 
   @Mutation(() => UserResponse)
   async register(
     @Arg("options") options: UsernamePasswordInput,
-    @Ctx() { em }: MyContext
+    @Ctx() { req, em }: MyContext
   ): Promise<UserResponse> {
     if (options.username.length <= 2) {
       return {
@@ -69,24 +68,34 @@ export class UserResolver {
       };
     }
     const hashedPassword = await argon2.hash(options.password);
-    const user = em.create(User, {
-      username: options.username,
-      password: hashedPassword,
-    });
+    let user;
     try {
-      await em.persistAndFlush(user);
-    } catch(err) {
-      if (err.code === '23505') {
+      const result = await (em as EntityManager)
+        .createQueryBuilder(User)
+        .getKnexQuery()
+        .insert({
+          username: options.username,
+          password: hashedPassword,
+          created_at: new Date(),
+          updated_at: new Date(),
+        })
+        .returning("*");
+      user = result[0]
+    } catch (err) {
+      if (err.code === "23505") {
         return {
           errors: [
             {
               field: "username",
-              message: "username has already been taken"
-            }
-          ]
-        }
+              message: "username has already been taken",
+            },
+          ],
+        };
       }
     }
+
+    req.session.userId = user.id;
+
     return { user };
   }
 
@@ -118,7 +127,7 @@ export class UserResolver {
       };
     }
 
-    req.session!.userId = user.id
+    req.session!.userId = user.id;
 
     return { user };
   }

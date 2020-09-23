@@ -30,16 +30,16 @@ const main = async () => {
 
   app.use(
     session({
-      name: "qwe",
+      name: "qid",
       store: new RedisStore({ client: redisClient, disableTouch: true }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 2, //2 hours
         httpOnly: true,
         sameSite: "lax",
-        secure: __prod__, //cookie only works in https
+        secure: false, //cookie only works in https
       },
       saveUninitialized: false,
-      secret: "save as environ var",
+      secret: "rdhyehdtjrtj",
       resave: false,
     })
   );
