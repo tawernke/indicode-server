@@ -1,5 +1,28 @@
 import { Product } from "../entities/Product";
-import { Resolver, Query, Arg, Mutation } from "type-graphql";
+import {
+  Resolver,
+  Query,
+  Arg,
+  Mutation,
+  InputType,
+  Field,
+  Ctx,
+  UseMiddleware,
+} from "type-graphql";
+import { MyContext } from "src/types";
+import { isAuth } from "../middleware/isAuth";
+
+@InputType()
+class ProductInput {
+  @Field()
+  name: string;
+
+  @Field()
+  price: number;
+
+  @Field()
+  purchaseCode: string;
+}
 
 @Resolver()
 export class ProductResolver {
@@ -14,8 +37,15 @@ export class ProductResolver {
   }
 
   @Mutation(() => Product)
-  async createProduct(@Arg("name") name: string): Promise<Product> {
-    return Product.create({ name }).save();
+  @UseMiddleware(isAuth)
+  async createProduct(
+    @Arg("input") input: ProductInput,
+    @Ctx() { req }: MyContext
+  ): Promise<Product> {
+    return Product.create({
+      ...input,
+      ownerId: req.session.userId,
+    }).save();
   }
 
   @Mutation(() => Product, { nullable: true })
