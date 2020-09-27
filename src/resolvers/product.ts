@@ -4,31 +4,22 @@ import {
   Query,
   Arg,
   Mutation,
-  InputType,
-  Field,
   Ctx,
   UseMiddleware,
 } from "type-graphql";
 import { MyContext } from "src/types";
 import { isAuth } from "../middleware/isAuth";
-
-@InputType()
-class ProductInput {
-  @Field()
-  name: string;
-
-  @Field()
-  price: number;
-
-  @Field()
-  purchaseCode: string;
-}
+import { ProductInput } from "./ProductInput";
 
 @Resolver()
 export class ProductResolver {
   @Query(() => [Product])
-  async products(): Promise<Product[]> {
-    return Product.find();
+  @UseMiddleware(isAuth)
+  async products(@Ctx() { req }: MyContext): Promise<Product[]> {
+    const allProducts = await Product.find({
+      where: { ownerId: req.session.userId },
+    });
+    return allProducts;
   }
 
   @Query(() => Product, { nullable: true })

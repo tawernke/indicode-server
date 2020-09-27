@@ -26,8 +26,12 @@ export class Product extends BaseEntity {
   price: number;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   purchaseCode!: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  imageUrl?: string;
 
   @Field()
   @Column({ default: false })
