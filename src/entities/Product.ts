@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Generated,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -18,6 +19,11 @@ export class Product extends BaseEntity {
   id!: number;
 
   @Field()
+  @Column({ unique: true })
+  @Generated("uuid")
+  uuid!: string;
+
+  @Field()
   @Column()
   name!: string;
 
@@ -26,16 +32,16 @@ export class Product extends BaseEntity {
   price: number;
 
   @Field()
-  @Column({ unique: true })
-  purchaseCode!: string;
-
-  @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Column()
   imageUrl?: string;
 
   @Field()
   @Column({ default: false })
   isSold!: boolean;
+
+  @Field()
+  @Column({ default: false })
+  isPublic!: boolean;
 
   @Field()
   @Column({ default: 1 })
