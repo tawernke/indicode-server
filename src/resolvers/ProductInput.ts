@@ -11,11 +11,11 @@ export class ProductInput {
   price: number;
 
   @Field()
-  quantity?: number;
+  quantity: number;
 
-  @Field()
-  purchaseCode: string;
-
-  @Field()
+  @Field({ nullable: true })
   imageUrl?: string;
+
+  @Field()
+  isPublic: boolean;
 }
