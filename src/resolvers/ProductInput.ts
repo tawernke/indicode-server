@@ -1,4 +1,5 @@
-import { Field, InputType } from "type-graphql";
+import { Product } from "../entities/Product";
+import { Field, InputType, ObjectType } from "type-graphql";
 
 //Inputs are what the resolver takes as an input, object types are what resolvers return
 
@@ -18,4 +19,12 @@ export class ProductInput {
 
   @Field()
   isPublic: boolean;
+}
+
+@ObjectType()
+export class PaginatedPublicProducts {
+  @Field(() => [Product])
+  publicProducts: Product[];
+  @Field()
+  hasMore: boolean;
 }
