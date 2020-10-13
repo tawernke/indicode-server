@@ -1,38 +1,42 @@
 import { ApolloServer } from "apollo-server-express";
 import connectRedis from "connect-redis";
 import cors from "cors";
+import "dotenv-safe/config";
 import express from "express";
 import session from "express-session";
 import Redis from "ioredis";
+import path from "path";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
-import { COOKIE_NAME } from "./constants";
-import { ProductResolver } from "./resolvers/product";
-import { UserResolver } from "./resolvers/user";
 import { createConnection } from "typeorm";
+import { COOKIE_NAME, __prod__ } from "./constants";
 import { Product } from "./entities/Product";
 import { User } from "./entities/User";
+import { ProductResolver } from "./resolvers/product";
+import { UserResolver } from "./resolvers/user";
 
 const main = async () => {
   const conn = await createConnection({
-    type: 'postgres',
-    database: 'indicode-db',
-    username: 'postgres',
-    password: 'postgres',
+    type: "postgres",
+    url: process.env.DATABASE_URL,
     logging: true,
-    synchronize: true,
-    entities: [User, Product]
-  })
+    synchronize: !!__prod__,
+    migrations: [path.join(__dirname, "./migrations/*")],
+    entities: [User, Product],
+  });
+  await conn.runMigrations();
 
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis();
+  const redis = new Redis(process.env.REDIS_URL);
+
+  app.set("proxy", 1)
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
-      credentials: true
+      origin: process.env.CORS_ORIGIN,
+      credentials: true,
     })
   );
 
@@ -43,14 +47,15 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 2, //2 hours
         httpOnly: true,
-        sameSite: "lax",
-        secure: false, //cookie only works in https
+        sameSite: "lax", //csrf
+        secure: __prod__, //cookie only works in https
+        domain: __prod__ ? ".digforclothes.com" : undefined,
       },
       saveUninitialized: false,
-      secret: "rdhyehdtjrtj",
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
-  );
+  )
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
@@ -65,8 +70,8 @@ const main = async () => {
     cors: false,
   });
 
-  app.listen(4000, () => {
-    console.log("🚀 Server started on localhost:4000");
+  app.listen(parseInt(process.env.PORT), () => {
+    console.log(`🚀 Server started on localhost:${process.env.PORT}`);
   });
 };
 

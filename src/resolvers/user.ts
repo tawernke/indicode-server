@@ -163,6 +163,7 @@ export class UserResolver {
 
     await sendEmail(
       email,
+      //TODO switch this to server domain as a env variable
       `<a href="http://localhost:3000/forgot-password/${token}">Forgot Password</a>`
     );
     return true;
