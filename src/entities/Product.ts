@@ -1,3 +1,4 @@
+import { Field, Float, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -6,9 +7,8 @@ import {
   Generated,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from "typeorm";
-import { Field, ObjectType } from "type-graphql";
 import { User } from "./User";
 
 @ObjectType()
@@ -27,8 +27,8 @@ export class Product extends BaseEntity {
   @Column()
   name!: string;
 
-  @Field()
-  @Column()
+  @Field(() => Float)
+  @Column({ type: "float" })
   price: number;
 
   @Field()
