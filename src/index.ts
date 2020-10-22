@@ -20,10 +20,12 @@ const main = async () => {
     type: "postgres",
     url: process.env.DATABASE_URL,
     logging: true,
-    // synchronize: !!__prod__,
+    synchronize: false,
     migrations: [path.join(__dirname, "./migrations/*")],
     entities: [User, Product],
   });
+
+  //Uncomment the below if changes are made to the DB
   await conn.runMigrations();
 
   const app = express();

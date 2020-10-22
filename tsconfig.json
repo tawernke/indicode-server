@@ -33,6 +33,6 @@
   ],
   "include": [
     "./src/**/*.tsx",
-    "./src/**/*.ts"
+    "./src/**/*.ts", "src/migrations/1602547145502-Initial.ts"
   ]
 }

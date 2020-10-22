@@ -19,11 +19,8 @@ import { ProductInput, PaginatedPublicProducts } from "./ProductInput";
 export class ProductResolver {
   @Query(() => [Product])
   @UseMiddleware(isAuth)
-  async products(@Ctx() { req }: MyContext): Promise<Product[]> {
-    const allProducts = await Product.find({
-      where: { ownerId: req.session.userId },
-    });
-    return allProducts;
+  async products(): Promise<Product[]> {
+    return Product.find({})
   }
 
   @Query(() => PaginatedPublicProducts)
