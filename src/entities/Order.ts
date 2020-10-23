@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   BaseEntity,
+  OneToMany,
 } from "typeorm";
 import { Field, Float, ObjectType } from "type-graphql";
+import { OrderItem } from "./OrderItem";
 
 @ObjectType()
 @Entity()
@@ -53,6 +55,9 @@ export class Order extends BaseEntity {
   @Field()
   @Column()
   totalQuantity!: number;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  orderItems: OrderItem[];
 
   @Field(() => String)
   @CreateDateColumn()
