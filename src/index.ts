@@ -10,8 +10,11 @@ import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { COOKIE_NAME, __prod__ } from "./constants";
+import { Order } from "./entities/Order";
+import { OrderItem } from "./entities/OrderItem";
 import { Product } from "./entities/Product";
 import { User } from "./entities/User";
+import { OrderResolver } from "./resolvers/order";
 import { ProductResolver } from "./resolvers/product";
 import { UserResolver } from "./resolvers/user";
 
@@ -22,7 +25,7 @@ const main = async () => {
     logging: true,
     synchronize: false,
     migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [User, Product],
+    entities: [User, Product, Order, OrderItem],
   });
 
   //Uncomment the below if changes are made to the DB
@@ -60,7 +63,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [ProductResolver, UserResolver],
+      resolvers: [ProductResolver, UserResolver, OrderResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res, redis }),
