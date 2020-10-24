@@ -36,7 +36,7 @@ export class OrderItem extends BaseEntity {
   @Column()
   orderId: number;
 
-  @ManyToOne(() => Order, (order) => order.orderItems)
+  @ManyToOne(() => Order, (order) => order.orderItems, { onDelete: "CASCADE" })
   order: Order;
 
   @Field(() => String)

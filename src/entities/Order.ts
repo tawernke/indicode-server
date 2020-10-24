@@ -18,35 +18,35 @@ export class Order extends BaseEntity {
 
   @Field()
   @Column()
-  customerFirstName!: string;
+  firstName!: string;
 
   @Field()
   @Column()
-  customerLastName!: string;
+  lastName!: string;
 
   @Field()
   @Column()
-  customerEmail!: string;
+  email!: string;
 
   @Field()
   @Column()
-  customerAddress!: string;
+  address!: string;
 
   @Field()
   @Column()
-  customerAddress2: string;
+  address2: string;
 
   @Field()
   @Column()
-  customerCity!: string;
+  city!: string;
 
   @Field()
   @Column()
-  customerCountry!: string;
+  country!: string;
 
   @Field()
   @Column()
-  customerZip!: string;
+  zip!: string;
 
   @Field(() => Float)
   @Column({ type: "float" })
@@ -56,7 +56,7 @@ export class Order extends BaseEntity {
   @Column()
   totalQuantity!: number;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
   orderItems: OrderItem[];
 
   @Field(() => String)
