@@ -56,6 +56,7 @@ export class Order extends BaseEntity {
   @Column()
   totalQuantity!: number;
 
+  @Field(() => [OrderItem])
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
   orderItems: OrderItem[];
 

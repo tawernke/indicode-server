@@ -1,8 +1,9 @@
 import { Product } from "../entities/Product";
-import { Arg, Mutation, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Order } from "../entities/Order";
 import { OrderInput } from "./OrderInput";
+import { isAuth } from "../middleware/isAuth";
 
 @Resolver()
 export class OrderResolver {
@@ -17,9 +18,8 @@ export class OrderResolver {
 
     const updateInventoryQueries = productsToUpdate.map((product) => {
       const soldQuantity =
-        order.orderItems.find(
-          (orderItem) => orderItem.productId === product.id
-        )?.quantity || 0;
+        order.orderItems.find((orderItem) => orderItem.productId === product.id)
+          ?.quantity || 0;
 
       return getConnection()
         .createQueryBuilder()
@@ -31,5 +31,11 @@ export class OrderResolver {
     await Promise.all(updateInventoryQueries);
 
     return order;
+  }
+
+  @Query(() => [Order])
+  @UseMiddleware(isAuth)
+  async orders(): Promise<Order[]> {
+    return Order.find({ relations: ["orderItems"] });
   }
 }
