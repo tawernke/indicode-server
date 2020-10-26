@@ -6,6 +6,9 @@ export class OrderItemInput {
   productName: string;
 
   @Field()
+  productId: number;
+
+  @Field()
   quantity: number;
 
   @Field(() => Float)

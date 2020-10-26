@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { Field, Float, ObjectType } from "type-graphql";
 import { Order } from "./Order";
+import { Product } from "./Product";
 
 @ObjectType()
 @Entity()
@@ -31,6 +32,13 @@ export class OrderItem extends BaseEntity {
   @Field(() => Float)
   @Column({ type: "float" })
   total!: number;
+
+  @Field()
+  @Column()
+  productId: number;
+
+  @ManyToOne(() => Product, (product) => product.orderItems)
+  product: Product;
 
   @Field()
   @Column()

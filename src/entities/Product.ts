@@ -6,9 +6,11 @@ import {
   Entity,
   Generated,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
+import { OrderItem } from "./OrderItem";
 import { User } from "./User";
 
 @ObjectType()
@@ -53,6 +55,9 @@ export class Product extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.products)
   owner: User;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product, { cascade: true })
+  orderItems: OrderItem[];
 
   @Field(() => String)
   @CreateDateColumn()
