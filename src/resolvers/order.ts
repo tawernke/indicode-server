@@ -12,7 +12,7 @@ export class OrderResolver {
       ...orderInput,
     }).save();
 
-    const updateIds = order.orderItems.map((item) => item.id);
+    const updateIds = order.orderItems.map((item) => item.productId);
     const productsToUpdate = await Product.findByIds(updateIds);
 
     const updateInventoryQueries = productsToUpdate.map((product) => {
