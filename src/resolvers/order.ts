@@ -1,14 +1,16 @@
-import { Product } from "../entities/Product";
-import { Arg, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Int, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Order } from "../entities/Order";
-import { OrderInput } from "./OrderInput";
+import { Product } from "../entities/Product";
 import { isAuth } from "../middleware/isAuth";
+import { AddOrderInput, UpdateOrderInput } from "./types.ts/order";
 
 @Resolver()
 export class OrderResolver {
   @Mutation(() => Order)
-  async createOrder(@Arg("orderInput") orderInput: OrderInput): Promise<Order> {
+  async createOrder(
+    @Arg("orderInput") orderInput: AddOrderInput
+  ): Promise<Order> {
     const order = await Order.create({
       ...orderInput,
     }).save();
@@ -37,5 +39,31 @@ export class OrderResolver {
   @UseMiddleware(isAuth)
   async orders(): Promise<Order[]> {
     return Order.find({ relations: ["orderItems"] });
+  }
+
+  @Query(() => Order, { nullable: true })
+  @UseMiddleware(isAuth)
+  async order(@Arg("id") id: string): Promise<Order | undefined> {
+    return Order.findOne({
+      where: { id },
+      relations: ["orderItems"],
+    });
+  }
+
+  @Mutation(() => Order, { nullable: true })
+  @UseMiddleware(isAuth)
+  async updateOrder(
+    @Arg("id", () => Int) id: number,
+    @Arg("input") input: UpdateOrderInput
+  ): Promise<Order | null> {
+    const result = await getConnection()
+      .createQueryBuilder()
+      .update(Order)
+      .set({ ...input })
+      .where("id = :id", { id })
+      .returning("*")
+      .execute();
+
+    return result.raw[0];
   }
 }

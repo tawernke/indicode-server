@@ -11,7 +11,7 @@ import {
 import { getConnection } from "typeorm";
 import { Product } from "../entities/Product";
 import { isAuth } from "../middleware/isAuth";
-import { ProductInput, PaginatedPublicProducts } from "./ProductInput";
+import { ProductInput, PaginatedPublicProducts } from "./types.ts/product";
 
 //TODO sort by admin and public routes
 

@@ -45,6 +45,10 @@ export class Order extends BaseEntity {
   country!: string;
 
   @Field()
+  @Column({ nullable: true })
+  stateOrProvince: string;
+
+  @Field()
   @Column()
   zip!: string;
 
@@ -60,7 +64,12 @@ export class Order extends BaseEntity {
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
   orderItems: OrderItem[];
 
+  @Field()
+  @Column({ default: false })
+  shipped!: boolean;
+
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date;
+  
 }

@@ -19,7 +19,7 @@ export class OrderItemInput {
 }
 
 @InputType()
-export class OrderInput {
+export class AddOrderInput {
   @Field(() => [OrderItemInput])
   orderItems: OrderItemInput[];
 
@@ -52,4 +52,13 @@ export class OrderInput {
 
   @Field()
   totalQuantity: number;
+
+  @Field()
+  shipped: true;
+}
+
+@InputType()
+export class UpdateOrderInput {
+  @Field()
+  shipped: true;
 }

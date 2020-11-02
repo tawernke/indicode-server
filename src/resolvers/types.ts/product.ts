@@ -1,5 +1,5 @@
 import { Field, Float, InputType, ObjectType } from "type-graphql";
-import { Product } from "../entities/Product";
+import { Product } from "../../entities/Product";
 
 //Inputs are what the resolver takes as an input, object types are what resolvers return
 
