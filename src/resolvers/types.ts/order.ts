@@ -52,9 +52,6 @@ export class AddOrderInput {
 
   @Field()
   totalQuantity: number;
-
-  @Field()
-  shipped: true;
 }
 
 @InputType()
