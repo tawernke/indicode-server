@@ -4,6 +4,7 @@ import { Order } from "../entities/Order";
 import { Product } from "../entities/Product";
 import { isAuth } from "../middleware/isAuth";
 import { AddOrderInput, UpdateOrderInput } from "./types.ts/order";
+import { sendEmail } from "../utils/sendEmail"
 
 @Resolver()
 export class OrderResolver {
@@ -14,6 +15,13 @@ export class OrderResolver {
     const order = await Order.create({
       ...orderInput,
     }).save();
+
+    await sendEmail(
+      order.email,
+      'Order Confirmed',
+      'customer-confirm-order',
+      order
+    );
 
     const updateIds = order.orderItems.map((item) => item.productId);
     const productsToUpdate = await Product.findByIds(updateIds);

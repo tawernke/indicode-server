@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "dev": "nodemon dist/index.js",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "html": "copyfiles --flat src/**/*.handlebars dist/email"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "@types/nodemailer": "^6.4.0",
     "@types/uuid": "^8.3.0",
     "class-validator": "^0.12.2",
+    "copyfiles": "^2.4.0",
     "gen-env-types": "^1.0.4",
     "nodemon": "^2.0.4",
     "ts-node": "^9.0.0",
@@ -43,7 +45,9 @@
     "express-session": "^1.17.1",
     "graphql": "^15.3.0",
     "ioredis": "^4.17.3",
-    "nodemailer": "^6.4.11",
+    "moment": "^2.29.1",
+    "nodemailer": "^6.4.14",
+    "nodemailer-express-handlebars": "^4.0.0",
     "pg": "^8.3.3",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.0.0",
