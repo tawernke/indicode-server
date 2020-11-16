@@ -35,6 +35,7 @@ export class ProductResolver {
       .getRepository(Product)
       .createQueryBuilder("p")
       .where("p.isPublic = :isPublic", { isPublic: true })
+      .andWhere("p.quantity > :quantity", { quantity: 0 })
       .orderBy('"createdAt"')
       .take(cappedLimitPlusOne);
 
