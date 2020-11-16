@@ -26,13 +26,14 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "allowJs": true
   },
   "exclude": [
     "node_modules"
   ],
   "include": [
     "./src/**/*.tsx",
-    "./src/**/*.ts", "src/migrations/1602547145502-Initial.ts"
+    "./src/**/*.ts", "src/migrations/1602547145502-Initial.ts", "src/utils/sendEmail.js", "./decs.d.ts"
   ]
 }

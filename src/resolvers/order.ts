@@ -1,10 +1,18 @@
-import { Arg, Int, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import { getConnection } from "typeorm";
 import { Order } from "../entities/Order";
 import { Product } from "../entities/Product";
 import { isAuth } from "../middleware/isAuth";
 import { AddOrderInput, UpdateOrderInput } from "./types.ts/order";
-import { sendEmail } from "../utils/sendEmail"
+import { sendEmail } from "../utils/sendEmail";
+import moment from "moment";
 
 @Resolver()
 export class OrderResolver {
@@ -16,12 +24,27 @@ export class OrderResolver {
       ...orderInput,
     }).save();
 
+    const orderDate = moment(order.createdAt).format("MMMM DD, YYYY");
+
+    await sendEmail(order.email, "Order Confirmed", "customer-confirm-order", {
+      order: {
+        ...order,
+        formattedDate: orderDate,
+      },
+    });
+
     await sendEmail(
-      order.email,
-      'Order Confirmed',
-      'customer-confirm-order',
-      order
+      process.env.SENDER_ADDRESS,
+      "New Order Received",
+      "new-order-alert",
+      {
+        order: {
+          ...order,
+          orderUrl: `${process.env.CORS_ORIGIN}/admin/orders/${order.id}`,
+        },
+      }
     );
+
 
     const updateIds = order.orderItems.map((item) => item.productId);
     const productsToUpdate = await Product.findByIds(updateIds);
