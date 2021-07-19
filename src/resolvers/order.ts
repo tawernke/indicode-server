@@ -69,7 +69,12 @@ export class OrderResolver {
   @Query(() => [Order])
   @UseMiddleware(isAuth)
   async orders(): Promise<Order[]> {
-    return Order.find({ relations: ["orderItems"] });
+    return Order.find({ 
+      relations: ["orderItems"],
+      order: {
+        createdAt: "DESC"
+      },
+    });
   }
 
   @Query(() => Order, { nullable: true })
