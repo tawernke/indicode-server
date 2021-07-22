@@ -1,11 +1,14 @@
-image: atlassian/default-image:2
-
+image: node:10.15.3
 definitions:
   steps:
     - step: &build
         name: Build
         script:
-            - zip -r application.zip . -x src/\* .git/\*
+          - apt-get update
+          - apt-get install zip
+          - yarn
+          - npm run build
+          - zip -r application.zip . -x node_modules/\* src/\* .git/\*
         artifacts: 
             - application.zip
 pipelines:
