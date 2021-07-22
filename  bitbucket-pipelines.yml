@@ -1,0 +1,31 @@
+image: node:10.15.3
+definitions:
+  steps:
+    - step: &build
+        name: Build
+        script:
+          - apt-get update
+          - apt-get install zip
+          - yarn
+          - npm run build
+          - zip -r application.zip . -x node_modules/\* src/\* .git/\*
+        artifacts: 
+            - application.zip
+pipelines:
+  branches:
+    # Auto deploy to production on merge to master   
+    master:
+      - step: *build
+      - step:
+          name: Deploy to LIVE
+          trigger: manual  # Uncomment to make this a manual deployment.
+          script:
+              - echo "Deploying to production environment"
+              - pipe: atlassian/aws-elasticbeanstalk-deploy:0.7.0
+                variables:
+                  AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                  AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                  AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                  APPLICATION_NAME: 'flur-jewellery'
+                  ENVIRONMENT_NAME: 'production'
+                  ZIP_FILE: 'application.zip'
