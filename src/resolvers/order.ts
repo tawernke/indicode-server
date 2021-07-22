@@ -45,7 +45,6 @@ export class OrderResolver {
       }
     );
 
-
     const updateIds = order.orderItems.map((item) => item.productId);
     const productsToUpdate = await Product.findByIds(updateIds);
 
@@ -69,10 +68,10 @@ export class OrderResolver {
   @Query(() => [Order])
   @UseMiddleware(isAuth)
   async orders(): Promise<Order[]> {
-    return Order.find({ 
+    return Order.find({
       relations: ["orderItems"],
       order: {
-        createdAt: "DESC"
+        createdAt: "DESC",
       },
     });
   }
