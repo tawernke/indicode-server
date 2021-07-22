@@ -1,26 +1,31 @@
-image: maven:3.6.1
-
+image: node:10.15.3
+definitions:
+  steps:
+    - step: &build
+        name: Build
+        script:
+          - apt-get update
+          - apt-get install zip
+          - yarn
+          - npm run build
+          - zip -r application.zip . -x node_modules/\* src/\* .git/\*
+        artifacts: 
+            - application.zip
 pipelines:
-  default:
-    - step:
-        caches:
-          - maven
-        script:
-          - mvn clean package
-        artifacts:
-          - target/*
-    - step:
-        name: "Deploy to Production"
-        # Track production environments builds using deployments.
-        deployment: production
-        caches:
-          - maven
-        script:
-        - pipe: atlassian/aws-elasticbeanstalk-deploy:0.6.6
-          variables:
-            AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-            AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-            AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-            APPLICATION_NAME: "flur-jewellery"
-            ENVIRONMENT_NAME: 'production'
-            ZIP_FILE: "target/flur-jewellery-$version.jar"
+  branches:
+    # Auto deploy to production on merge to master   
+    master:
+      - step: *build
+      - step:
+          name: Deploy to LIVE
+          trigger: manual  # Uncomment to make this a manual deployment.
+          script:
+              - echo "Deploying to production environment"
+              - pipe: atlassian/aws-elasticbeanstalk-deploy:0.7.0
+                variables:
+                  AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                  AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                  AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                  APPLICATION_NAME: 'flur-jewellery'
+                  ENVIRONMENT_NAME: 'production'
+                  ZIP_FILE: 'application.zip'
