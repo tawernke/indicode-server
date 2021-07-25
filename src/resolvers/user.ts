@@ -50,7 +50,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async register(
     @Arg("options") options: UsernamePasswordInput,
-    @Ctx() { req }: MyContext
+      @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const errors = validateRegister(options);
     if (errors) return { errors };
@@ -96,8 +96,8 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async login(
     @Arg("usernameOrEmail") usernameOrEmail: string,
-    @Arg("password") password: string,
-    @Ctx() { req }: MyContext
+      @Arg("password") password: string,
+      @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const user = await User.findOne({
       where: usernameOrEmail.includes("@")
@@ -145,7 +145,7 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async forgotPassword(
-    @Arg("email") email: string,
+  @Arg("email") email: string,
     @Ctx() { redis }: MyContext
   ) {
     const user = await User.findOne({ where: { email } });
@@ -172,8 +172,8 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async changePassword(
     @Arg("token") token: string,
-    @Arg("newPassword") newPassword: string,
-    @Ctx() { redis, req }: MyContext
+      @Arg("newPassword") newPassword: string,
+      @Ctx() { redis, req }: MyContext
   ): Promise<UserResponse> {
     if (newPassword.length <= 2) {
       return {

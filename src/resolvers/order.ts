@@ -89,7 +89,7 @@ export class OrderResolver {
   @UseMiddleware(isAuth)
   async updateOrder(
     @Arg("id", () => Int) id: number,
-    @Arg("input") input: UpdateOrderInput
+      @Arg("input") input: UpdateOrderInput
   ): Promise<Order | null> {
     const result = await getConnection()
       .createQueryBuilder()

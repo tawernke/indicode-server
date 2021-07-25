@@ -26,7 +26,7 @@ export class ProductResolver {
   @Query(() => PaginatedPublicProducts)
   async publicProducts(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+      @Arg("cursor", () => String, { nullable: true }) cursor: string | null
   ): Promise<PaginatedPublicProducts> {
     const cappedLimit = Math.min(50, limit);
     const cappedLimitPlusOne = cappedLimit + 1;
@@ -60,7 +60,7 @@ export class ProductResolver {
   @UseMiddleware(isAuth)
   async createProduct(
     @Arg("input") input: ProductInput,
-    @Ctx() { req }: MyContext
+      @Ctx() { req }: MyContext
   ): Promise<Product> {
     return Product.create({
       ...input,
@@ -72,7 +72,7 @@ export class ProductResolver {
   @UseMiddleware(isAuth)
   async updateProduct(
     @Arg("uuid") uuid: string,
-    @Arg("input") input: ProductInput
+      @Arg("input") input: ProductInput
   ): Promise<Product | null> {
     const product = await Product.findOne({ where: { uuid } });
     if (!product) return null;
