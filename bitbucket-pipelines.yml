@@ -1,20 +1,20 @@
 image: node:12.14.1
 definitions:
   steps:
-    - step: &yarn
+    - step: &install-deps
         name: Install Deps
         caches:
          - node # includes node_modules
         script:
           - yarn
     - step: &lint
-        name: Lint Themes
+        name: Lint Code
         caches:
          - node
         script:
           - yarn lint
-    - step: &build-and-deploy
-        name: Build & Deploy
+    - step: &build
+        name: Build
         deployment: development
         caches:
          - node
@@ -28,10 +28,12 @@ definitions:
 pipelines:
   branches:
     develop:
-      - step: *yarn
+      - step: *install-deps
       - step: *lint
     # Auto deploy to production on merge to master   
     master:
+      - step: *install-deps
+      - step: *lint
       - step: *build
       - step:
           name: Deploy to LIVE
