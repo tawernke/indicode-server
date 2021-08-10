@@ -15,7 +15,6 @@ definitions:
           - yarn lint
     - step: &build
         name: Build
-        deployment: development
         caches:
          - node
         script:
@@ -37,7 +36,7 @@ pipelines:
       - step: *build
       - step:
           name: Deploy to LIVE
-          trigger: manual  # Uncomment to make this a manual deployment.
+          # trigger: manual  # Uncomment to make this a manual deployment.
           script:
               - echo "Deploying to production environment"
               - pipe: atlassian/aws-elasticbeanstalk-deploy:0.7.0
