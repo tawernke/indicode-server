@@ -11,6 +11,9 @@ export class OrderItemInput {
   @Field()
   quantity: number;
 
+  @Field()
+  imageUrl: string;
+
   @Field(() => Float)
   price: number;
 

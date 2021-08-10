@@ -23,6 +23,10 @@ export class OrderItem extends BaseEntity {
 
   @Field()
   @Column()
+  imageUrl!: string;
+
+  @Field()
+  @Column()
   quantity!: number;
 
   @Field(() => Float)
