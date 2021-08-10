@@ -4,22 +4,25 @@ import hbs from "nodemailer-express-handlebars";
 
 export async function sendEmail(to, subject, template, context) {
   const {
-    MAIL_HOST,
-    MAIL_PORT,
-    MAIL_USER,
-    MAIL_PASS,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    GOOGLE_REFRESH_TOKEN,
     SENDER_ADDRESS,
+    GOOGLE_ACCESS_TOKEN
   } = process.env;
 
   // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
-    host: MAIL_HOST,
-    port: MAIL_PORT,
-    secure: false, // true for 465, false for other ports
+    service: "Gmail",
     auth: {
-      user: MAIL_USER, // generated ethereal user
-      pass: MAIL_PASS, // generated ethereal password
-    },
+      type: 'OAuth2',
+      user: "flurjewellery@gmail.com", // Your gmail address.
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      refreshToken: GOOGLE_REFRESH_TOKEN,
+      accessToken: GOOGLE_ACCESS_TOKEN,
+      expires: 3599
+    }
   });
 
   transporter.use(
@@ -36,13 +39,17 @@ export async function sendEmail(to, subject, template, context) {
   );
 
   // send mail with defined transport object
-  await transporter.sendMail({
-    from: `"Flur Jewellery" <${SENDER_ADDRESS}>`, // sender address
-    to, // list of receivers
-    subject, // Subject line
-    // text, // plain text body
-    template,
-    context
-  });
+  try {
+    await transporter.sendMail({
+      from: `"Flur Jewellery" <${SENDER_ADDRESS}>`, // sender address
+      to, // list of receivers
+      subject, // Subject line
+      // text, // plain text body
+      template,
+      context
+    });
+  } catch (err) {
+    console.log(err)
+  }
 }
 
