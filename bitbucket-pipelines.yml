@@ -45,6 +45,6 @@ pipelines:
                   AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
                   AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
                   APPLICATION_NAME: 'flur-api'
-                  ENVIRONMENT_NAME: 'production'
+                  ENVIRONMENT_NAME: 'Flurapi-env-2'
                   ZIP_FILE: 'application.zip'
                   S3_BUCKET: $S3_BUCKET
