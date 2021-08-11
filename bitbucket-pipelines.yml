@@ -47,3 +47,4 @@ pipelines:
                   APPLICATION_NAME: 'flur-jewellery'
                   ENVIRONMENT_NAME: 'production'
                   ZIP_FILE: 'application.zip'
+                  S3_BUCKET: $S3_BUCKET
