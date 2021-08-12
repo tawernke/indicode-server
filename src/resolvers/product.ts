@@ -20,7 +20,7 @@ export class ProductResolver {
   @Query(() => [Product])
   @UseMiddleware(isAuth)
   async products(): Promise<Product[]> {
-    return Product.find({})
+    return Product.find({});
   }
 
   @Query(() => PaginatedPublicProducts)
@@ -83,9 +83,13 @@ export class ProductResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteProduct(@Arg("id") id: number): Promise<boolean> {
+  @UseMiddleware(isAuth)
+  async deleteProduct(
+    @Arg("id", () => Int) id: number,
+      @Ctx() { req }: MyContext
+  ): Promise<boolean> {
     try {
-      await Product.delete(id);
+      await Product.delete({ id, ownerId: req.session.userId });
     } catch {
       return false;
     }
