@@ -16,5 +16,4 @@ export class AddProductOrderItemRelationship1603679265692 implements MigrationIn
     await queryRunner.query(`ALTER TABLE "order_item" DROP COLUMN "productId"`);
     await queryRunner.query(`ALTER TABLE "order_item" ADD CONSTRAINT "FK_646bf9ece6f45dbe41c203e06e0" FOREIGN KEY ("orderId") REFERENCES "order"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
   }
-
 }

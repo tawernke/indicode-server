@@ -53,6 +53,10 @@ export class Product extends BaseEntity {
   @Column()
   ownerId: number;
 
+  @Field()
+  @Column({ default: false })
+  deleted: boolean;
+
   @ManyToOne(() => User, (user) => user.products)
   owner: User;
 
