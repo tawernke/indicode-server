@@ -19,6 +19,9 @@ export class ProductInput {
 
   @Field()
   isPublic: boolean;
+
+  @Field({ nullable: true })
+  deleted?: boolean;
 }
 
 @ObjectType()

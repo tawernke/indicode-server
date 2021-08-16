@@ -20,7 +20,7 @@ export class ProductResolver {
   @Query(() => [Product])
   @UseMiddleware(isAuth)
   async products(): Promise<Product[]> {
-    return Product.find({})
+    return Product.find({});
   }
 
   @Query(() => PaginatedPublicProducts)
@@ -36,6 +36,7 @@ export class ProductResolver {
       .createQueryBuilder("p")
       .where("p.isPublic = :isPublic", { isPublic: true })
       .andWhere("p.quantity > :quantity", { quantity: 0 })
+      .andWhere("p.deleted = :deleted", { deleted: false })
       .orderBy('"createdAt"')
       .take(cappedLimitPlusOne);
 
@@ -82,13 +83,20 @@ export class ProductResolver {
     return product;
   }
 
-  @Mutation(() => Boolean)
-  async deleteProduct(@Arg("id") id: number): Promise<boolean> {
-    try {
-      await Product.delete(id);
-    } catch {
-      return false;
-    }
-    return true;
-  }
+  //Not using this mutation right now as products are deleted through with a deleted: true flag
+  // @Mutation(() => Boolean)
+  // @UseMiddleware(isAuth)
+  // async deleteProduct(
+  //   @Arg("id", () => Int) id: number,
+  //     @Ctx() { req }: MyContext
+  // ): Promise<boolean> {
+  //   try {
+  //     await Product.delete({ id, ownerId: req.session.userId });
+  //     console.log('success')
+  //   } catch (err) {
+  //     console.log(err)
+  //     return false;
+  //   }
+  //   return true;
+  // }
 }
