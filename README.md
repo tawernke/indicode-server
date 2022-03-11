@@ -37,3 +37,7 @@ npx ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run #run mi
 yarn watch # compile ts to js
 yarn dev # start server
 ```
+
+### Deployment
+
+The backend is deployed to AWS with Elastic Beanstalk using Amazon RDS for the DB. The deployment happens automatically via a bitbucket pipeline when commits are made to the master branch.
