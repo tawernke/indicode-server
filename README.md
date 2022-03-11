@@ -32,8 +32,8 @@ What things you need to install the software and how to install them
 ```sh
 cp .env.example .env # make a new env file
 yarn # install dependencies
-createdb indicode # create postgres db
+createdb indicode # create postgres db called indicode
 npx ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run #run migrations
 yarn watch # compile ts to js
-yarn dev # auto restart server when changes are made
+yarn dev # start server
 ```
