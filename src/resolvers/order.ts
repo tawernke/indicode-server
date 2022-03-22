@@ -10,7 +10,7 @@ import { getConnection } from "typeorm";
 import { Order } from "../entities/Order";
 import { Product } from "../entities/Product";
 import { isAuth } from "../middleware/isAuth";
-import { AddOrderInput, UpdateOrderInput } from "./types.ts/order";
+import { AddOrderInput, AllOrders, UpdateOrderInput } from "./types.ts/order";
 import { sendEmail } from "../utils/sendEmail";
 import moment from "moment";
 
@@ -65,10 +65,13 @@ export class OrderResolver {
     return order;
   }
 
-  @Query(() => [Order])
+  @Query(() => AllOrders)
   @UseMiddleware(isAuth)
-  async orders(): Promise<Order[]> {
+  async orders(
+    @Arg("isShipped", () => Boolean) isShipped: boolean
+  ): Promise<Order[]> {
     return Order.find({
+      where: { isShipped },
       relations: ["orderItems"],
       order: {
         createdAt: "DESC",

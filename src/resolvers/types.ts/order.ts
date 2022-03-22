@@ -1,4 +1,5 @@
-import { InputType, Field, Float } from "type-graphql";
+import { Order } from "../../entities/Order";
+import { InputType, Field, Float, ObjectType } from "type-graphql";
 
 @InputType()
 export class OrderItemInput {
@@ -61,4 +62,12 @@ export class AddOrderInput {
 export class UpdateOrderInput {
   @Field()
   shipped: true;
+}
+
+@ObjectType()
+export class AllOrders {
+  @Field(() => [Order])
+  shippedOrders: Order[] | null;
+  @Field(() => [Order])
+  unShippedOrders: Order[] | null;
 }

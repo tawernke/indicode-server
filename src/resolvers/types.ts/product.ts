@@ -25,9 +25,11 @@ export class ProductInput {
 }
 
 @ObjectType()
-export class PaginatedPublicProducts {
+export class PaginatedProducts {
   @Field(() => [Product])
-  publicProducts: Product[];
+  publicProducts: Product[] | null;
+  @Field(() => [Product])
+  privateProducts: Product[] | null;
   @Field()
   hasMore: boolean;
 }
