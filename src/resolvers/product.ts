@@ -11,30 +11,23 @@ import {
 import { getConnection } from "typeorm";
 import { Product } from "../entities/Product";
 import { isAuth } from "../middleware/isAuth";
-import { ProductInput, PaginatedPublicProducts } from "./types.ts/product";
-
-//TODO sort by admin and public routes
+import { ProductInput, PaginatedProducts } from "./types.ts/product";
 
 @Resolver()
 export class ProductResolver {
-  @Query(() => [Product])
-  @UseMiddleware(isAuth)
-  async products(): Promise<Product[]> {
-    return Product.find({});
-  }
-
-  @Query(() => PaginatedPublicProducts)
-  async publicProducts(
-    @Arg("limit", () => Int) limit: number,
+  @Query(() => PaginatedProducts)
+  async products(
+    @Arg("isPublic", () => Boolean) isPublic: boolean,
+      @Arg("limit", () => Int) limit: number,
       @Arg("cursor", () => String, { nullable: true }) cursor: string | null
-  ): Promise<PaginatedPublicProducts> {
+  ): Promise<PaginatedProducts> {
     const cappedLimit = Math.min(50, limit);
     const cappedLimitPlusOne = cappedLimit + 1;
 
     const qb = getConnection()
       .getRepository(Product)
       .createQueryBuilder("p")
-      .where("p.isPublic = :isPublic", { isPublic: true })
+      .where("p.isPublic = :isPublic", { isPublic })
       .andWhere("p.quantity > :quantity", { quantity: 0 })
       .andWhere("p.deleted = :deleted", { deleted: false })
       .orderBy('"createdAt"')
@@ -48,6 +41,7 @@ export class ProductResolver {
 
     return {
       publicProducts: products.slice(0, cappedLimit),
+      privateProducts: products.slice(0, cappedLimit),
       hasMore: products.length === cappedLimitPlusOne,
     };
   }
